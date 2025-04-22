@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>FinPal – Stock Quiz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom right, #e0f2fe, #f8fafc);
+      margin: 0;
+      padding: 0;
+      color: #1f2937;
+    }
+    .container {
+      max-width: 680px;
+      margin: 3rem auto;
+      padding: 2rem;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+    }
+    h2, h3 {
+      color: #1e3a8a;
+    }
+    .section { display: none; }
+    .section.active { display: block; }
+    .option-btn, .btn {
+      display: block;
+      width: 100%;
+      padding: 1rem;
+      margin: 1rem 0;
+      font-weight: 600;
+      background: #6366f1;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .option-btn:hover, .btn:hover {
+      background: #4f46e5;
+      transform: scale(1.02);
+    }
+    .feedback, .takeaway {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #e0f2fe;
+      border-left: 4px solid #6366f1;
+      border-radius: 6px;
+    }
+    .txt-btn {
+      margin-top: 2rem;
+      display: block;
+      text-align: center;
+      text-decoration: underline;
+      color: #4f46e5;
+      font-weight: 600;
+    }
+    textarea, input[type="email"] {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      margin-top: 0.75rem;
+    }
+  </style>
+  <!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+</head>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+  
+    const firebaseConfig = {
+      apiKey: "AIzaSyC-eWUjlwS6tDRiF1IiPKC9xtXltbaHeK4",
+      authDomain: "finpal-feedback.firebaseapp.com",
+      projectId: "finpal-feedback",
+      storageBucket: "finpal-feedback.firebasestorage.app",
+      messagingSenderId: "175794720464",
+      appId: "1:175794720464:web:7bad1998c5c56c207618d5"
+    };
+  
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+  
+    document.getElementById("submitFeedback").addEventListener("click", async () => {
+      const email = document.getElementById("emailInput").value.trim();
+      const feedback = document.getElementById("feedbackInput").value.trim();
+  
+      if (!feedback) {
+        alert("Please write some feedback before submitting.");
+        return;
+      }
+  
+      try {
+        await addDoc(collection(db, "feedbacks"), {
+          email: email || "Anonymous",
+          feedback,
+          timestamp: new Date()
+        });
+  
+        alert("Thanks for your feedback! You’re helping us make FinPal better");
+        document.getElementById("emailInput").value = "";
+        document.getElementById("feedbackInput").value = "";
+      } catch (e) {
+        console.error("Error adding document: ", e);
+        alert("❌ Something went wrong. Please try again later.");
+      }
+    });
+  </script>
+
+<body>
+  <div class="container">
+    <div id="scenario" class="section active">
+      <button class="txt-btn" onclick="goBackHome()">← Back to topics</button>
+      <h2 id="scenario-title"></h2>
+      <div id="scenario-body"></div>
+      <button id="optA" class="option-btn"></button>
+      <button id="optB" class="option-btn"></button>
+      <button id="optC" class="option-btn"></button>
+      <div id="feedback" class="feedback" style="display:none;"></div>
+      <div id="takeaway" class="takeaway" style="display:none;"></div>
+      <button id="nextBtn" class="btn" style="display:none;" onclick="nextScenario()">Next →</button>
+    </div>
+    <!-- Final Feedback Section -->
+<div id="summary" class="section">
+    <h2>You're amazing 🫶</h2>
+    <div style="margin-top: 2.5rem; padding: 1.5rem; background: #f9fafb; border-radius: 10px; border: 1px solid #e5e7eb;">
+      <h3 style="margin-bottom: 0.5rem;">Thanks for giving FinPal a try! 💜</h3>
+      <p>We’re just getting started and your feedback means everything to us.</p>
+      <p style="margin-top: 1rem;">Be honest. What can we do better?</p>
+      <textarea id="feedbackInput" rows="4" placeholder="Your thoughts..."></textarea>
+  
+      <p style="margin-top: 1rem;"><strong>Want to stay in the loop?</strong> Drop your email below.</p>
+      <input type="email" id="emailInput" placeholder="you@email.com (optional)" />
+  
+      <button id="submitFeedback" class="btn" style="margin-top: 1.2rem;">Send Feedback</button>
+    </div>
+    <a class="txt-btn" href="stock.html">← Start over</a>
+  </div>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const userLevel = parseInt(urlParams.get("level") || "0");
+    let questionIndex = 0;
+
+    const allScenarios = {
+      0: [
+        { title: 'What is a share?', text: 'If a company pie is 10 slices, owning 1 slice means you own...', A: ' 1/10', B: ' 1/2', C: ' 1/100', correct: 'A', tip: 'Each share is a slice of ownership!' },
+        { title: 'Why invest in companies?', text: 'You buy shares because...', A: 'You get free stuff', B: ' You believe the company will grow', C: 'Everyone else is buying', correct: 'B', tip: 'Invest for long-term value.' },
+        { title: 'What is a stock?', text: 'A stock represents...', A: 'slice of ownership', B: 'A loan to a company', C: 'A product', correct: 'A', tip: 'Stock = piece of the business!' },
+        { title: 'Stock market is...', text: 'Think of the stock market like...', A: 'A gambling den', B: 'An online store for companies', C: 'A magic money machine', correct: 'B', tip: 'It’s a marketplace, not a casino.' }
+      ],
+      1: [
+        { title: 'Bid vs Ask', text: 'You want 1 share. Bid: $9.95 | Ask: $10.05. You pay...', A: '$9.95', B: '$10.05', C: '$10.00', correct: 'B', tip: 'Market orders match the ask.' },
+        { title: 'What is a Limit Order?', text: 'Limit order helps you...', A: 'Choose a price to buy', B: 'Panic sell', C: 'Trade crypto', correct: 'A', tip: 'Limit orders give price control.' },
+        { title: 'Why diversify?', text: 'Diversification means...', A: 'Buying one stock', B: 'Spreading risk', C: 'Ignoring risk', correct: 'B', tip: 'Don’t put all eggs in one basket.' },
+        { title: 'What’s volatility?', text: 'Volatility means...', A: 'Constant growth', B: 'No change', C: 'Price swings', correct: 'C', tip: 'Stocks go up AND down!' }
+      ],
+      2: [
+        { title: 'What helps long-term?', text: 'To reduce risk you should...', A: 'Day trade', B: 'Hold longer', C: 'YOLO into meme stocks', correct: 'B', tip: 'Time smooths out volatility.' },
+        { title: 'Smart strategy?', text: 'A good strategy for beginners is...', A: 'Random picks', B: 'Diversification', C: 'Buy high, sell low', correct: 'B', tip: 'Spread across sectors.' },
+        { title: 'What’s a dividend?', text: 'A dividend is...', A: 'A company gift', B: 'A share of profits', C: 'A loan', correct: 'B', tip: 'Passive income for holding!' },
+        { title: 'What’s a portfolio?', text: 'Your portfolio is...', A: 'Your resume', B: 'Your collection of assets', C: 'A shopping cart', correct: 'B', tip: 'It’s your investment basket!' }
+      ],
+      3: [
+        { title: 'Stop loss?', text: 'Stop orders are used to...', A: 'Prevent loss', B: 'Celebrate gains', C: 'Set alerts', correct: 'A', tip: 'Stops help you exit automatically.' },
+        { title: 'ETF vs Stock', text: 'ETFs are...', A: 'A) Single company', B: 'Baskets of assets', C: 'Loans', correct: 'B', tip: 'ETFs diversify instantly.' },
+        { title: 'Risk management', text: 'You manage risk by...', A: 'Ignoring it', B: 'Planning entry/exit', C: 'Guessing', correct: 'B', tip: 'Have a strategy!' },
+        { title: 'Trading frequency', text: 'More trades = ...?', A: 'More gains guaranteed', B: 'Higher risk + fees', C: 'Free money', correct: 'B', tip: 'Less is often more.' }
+      ]
+    };
+
+    function goBackHome() {
+      window.location.href = "stock.html";
+    }
+
+    function showSection(id) {
+      document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
+    function loadQuestion() {
+        const scenario = allScenarios[userLevel][questionIndex];
+        if (!scenario) return showSection("summary");
+      
+        // Store the original answer values and correct one
+        const answers = [
+          { text: scenario.A },
+          { text: scenario.B },
+          { text: scenario.C }
+        ];
+      
+        // Randomize the order of the texts
+        const shuffled = [...answers].sort(() => 0.5 - Math.random());
+      
+        // Determine which label (A/B/C) now holds the correct answer text
+        let correctLabel = "";
+        if (shuffled[0].text === scenario[scenario.correct]) correctLabel = "A";
+        else if (shuffled[1].text === scenario[scenario.correct]) correctLabel = "B";
+        else correctLabel = "C";
+      
+        // Fill the button labels (fixed A/B/C) with shuffled content
+        document.getElementById("scenario-title").innerText = scenario.title;
+        document.getElementById("scenario-body").innerText = scenario.text;
+        document.getElementById("optA").innerText = `A) ${shuffled[0].text}`;
+        document.getElementById("optB").innerText = `B) ${shuffled[1].text}`;
+        document.getElementById("optC").innerText = `C) ${shuffled[2].text}`;
+      
+        document.getElementById("feedback").style.display = "none";
+        document.getElementById("takeaway").style.display = "none";
+        document.getElementById("nextBtn").style.display = "none";
+      
+        // Keep fixed A/B/C label, pass actual choice label (not content)
+        document.getElementById("optA").onclick = () => checkAnswer("A", scenario, correctLabel);
+        document.getElementById("optB").onclick = () => checkAnswer("B", scenario, correctLabel);
+        document.getElementById("optC").onclick = () => checkAnswer("C", scenario, correctLabel);
+      }
+      async function checkAnswer(choice, scenario, correctLabel) {
+        const fb = document.getElementById("feedback");
+        const tip = document.getElementById("takeaway");
+      
+        if (choice === correctLabel) {
+          fb.textContent = "✅ Nailed it!";
+          tip.textContent = scenario.tip;
+        } else {
+          fb.textContent = "❌ Oops! Not quite.";
+          const prompt = `Question: ${scenario.text}\nUser chose: ${choice}\nCorrect answer: ${correctLabel}\nExplain why this answer is wrong in a short, encouraging tone.`;
+          try {
+            const response = await fetch("http://localhost:5050/api/chat", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ prompt })
+            });
+            const data = await response.json();
+            tip.textContent = data.choices?.[0]?.message?.content.trim() || scenario.tip;
+          } catch {
+            tip.textContent = scenario.tip;
+          }
+        }
+      
+        fb.style.display = "block";
+        tip.style.display = "block";
+        document.getElementById("nextBtn").style.display = "block";
+      }
+
+    function nextScenario() {
+      questionIndex++;
+      loadQuestion();
+    }
+
+    function submitFeedback() {
+      const feedback = document.getElementById("feedbackText").value.trim();
+      const email = document.getElementById("emailInput").value.trim();
+
+      if (feedback.length < 3) {
+        alert("Let us know what you think — just a few words would help!");
+        return;
+      }
+
+      console.log("User Feedback:", feedback);
+      console.log("User Email:", email);
+
+      alert("Thanks so much! We really appreciate your feedback. 💜");
+      resetToStart();
+    }
+
+    function resetToStart() {
+      window.location.href = "stock.html";
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>

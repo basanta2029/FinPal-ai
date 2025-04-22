@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- CSS Link -->
+<link rel="stylesheet" href="styles.css" />
+
+<!-- JS Script -->
+<script type="module" src="script.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FinPal – Market Basics Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    body { font-family: 'Inter', sans-serif; background: linear-gradient(to bottom right,#e0f2fe,#f8fafc); margin:0; padding:0; color:#1f2937; }
+    .container { max-width:640px; margin:3rem auto; padding:2rem; background:#fff; border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,0.05); }
+    h1,h2 { text-align:center; color:#1e3a8a; }
+    .section { display:none; margin-top:2rem; padding:1.5rem; background:#f1f5f9; border-radius:12px; position: relative; }
+    .section.active { display:block; }
+    .btn, .option-btn { display:block; width:100%; padding:1rem; margin:1rem 0; font-weight:600; background:#6366f1; color:#fff; border:none; border-radius:8px; cursor:pointer; text-align:center; transition:background .2s,transform .2s; }
+    .btn:hover, .option-btn:hover { background:#4f46e5; transform:scale(1.02); }
+    .feedback { margin-top:1rem; padding:1rem; background:#e0f2fe; border-left:4px solid #6366f1; border-radius:6px; }
+    .takeaway { margin-top:1rem; font-weight:600; }
+    .txt-btn { background:none; color:#4f46e5; text-decoration:underline; border:none; cursor:pointer; font-size:.9rem; margin-top:1rem; }
+    .back-btn { position:absolute; top:1rem; left:1rem; background:none; border:none; color:#4f46e5; font-size:.9rem; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class ="fade-in">Investing feels confusing? Let’s fix that</h1>
+
+    <!-- Experience Level -->
+    <div id="experience" class="section active" style="background: #fdfdfd; border: 1px solid #e5e7eb; box-shadow: 0 6px 20px rgba(0,0,0,0.06); border-radius: 16px; padding: 2rem;">
+      <p style="font-weight: 600; font-size: 1.1rem; margin-bottom: 0.3rem; color: #111827;">
+        Imagine if <span style="color:#6366f1;">Duolingo</span> and <span style="color:#6366f1;">Robinhood</span> had a baby-but less chaotic. That's FinPal. 
+      </p>
+      <p style="color:#374151; font-size: 1.05rem;">
+        We turn confusing investing stuff into fun, snack-sized lessons so you can finally feel confident making your first move.
+      </p>
+
+    <h3 style="text-align:center;">What do you want to explore today?</h3>
+    <div class="btn-group">
+      <a href="stock.html" class="option-btn">Stock Market</a>
+      <a href="coming-soon.html?topic=crypto" class="option-btn">Crypto</a>
+      <a href="coming-soon.html?topic=hysa" class="option-btn">High-Yield Savings</a>
+    </div>
+
+    <p style="text-align:center; margin-top:2rem;">
+      <a href="about.html" class="txt-btn glow">Curious? Learn what FinPal’s really about →</a>
+    </p>
+  </div>
+</body>
+</html>

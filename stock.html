@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>FinPal – Stock Journey</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom right, #e0f2fe, #f8fafc);
+      margin: 0;
+      padding: 0;
+      color: #1f2937;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 3rem auto;
+      padding: 2rem;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+    }
+
+    h1 {
+      text-align: center;
+      color: #1e3a8a;
+      margin-bottom: 1.5rem;
+    }
+
+    .subheading {
+      text-align: center;
+      font-weight: 500;
+      font-size: 1.1rem;
+      color: #4b5563;
+      margin-bottom: 2rem;
+    }
+
+    .fact-section {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .fact-section h3 {
+      color: #1e40af;
+      margin-bottom: 0.8rem;
+    }
+
+    .fact {
+      font-weight: 500;
+      color: #374151;
+    }
+
+    .option-btn {
+      display: block;
+      width: 100%;
+      padding: 1rem;
+      margin: 1rem 0;
+      font-weight: 600;
+      background: #6366f1;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      transition: background .2s, transform .2s;
+    }
+
+    .option-btn:hover {
+      background: #4f46e5;
+      transform: scale(1.02);
+    }
+
+    .txt-btn {
+      display: block;
+      text-align: center;
+      margin-top: 2rem;
+      color: #4f46e5;
+      text-decoration: underline;
+      font-weight: 600;
+    }
+
+    .txt-btn:hover {
+      color: #4338ca;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Where are you at right now?</h1>
+    <p class="subheading">Let’s talk stocks-don’t worry, we’ll make it fun.</p>
+    <!-- Back to first page -->
+<button onclick="goBackHome()" style="
+background: none;
+border: none;
+color: #4f46e5;
+font-size: 0.9rem;
+font-weight: 600;
+margin-bottom: 1rem;
+cursor: pointer;
+text-decoration: underline;
+">
+← Back to main options
+</button>
+
+    <!-- AI-Powered Fact Section -->
+    <div class="fact-section">
+      <h3>Quick Stock Fact</h3>
+      <p id="fact" class="fact">Loading a cool stock fact for you...</p>
+    </div>
+
+    <!-- Experience buttons -->
+    <button class="option-btn" onclick="setLevel(0)">I’ve never heard of stocks</button>
+    <button class="option-btn" onclick="setLevel(1)">I know a little</button>
+    <button class="option-btn" onclick="setLevel(2)">I’ve tried but felt lost</button>
+    <button class="option-btn" onclick="setLevel(3)">I’m comfortable</button>
+
+    <a href="about.html" class="txt-btn">Curious? Learn more about FinPal→</a>
+  </div>
+
+  <script>
+    function setLevel(level) {
+      window.location.href = `stock-quiz.html?level=${level}`;
+    }
+
+    async function loadStockFact() {
+      const prompt = `Give me one surprising, beginner-friendly fact about the stock market in under 25 words. Make it punchy but educational.`;
+
+      try {
+        const response = await fetch("http://localhost:5050/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt })
+        });
+
+        const data = await response.json();
+        const content = data?.choices?.[0]?.message?.content?.trim();
+
+        document.getElementById("fact").innerText = content || "Stocks represent ownership in companies. Over time, they’ve been one of the best ways to grow wealth.";
+      } catch (error) {
+        console.error("Error loading stock fact:", error);
+        document.getElementById("fact").innerText = "Stocks represent ownership in companies. Over time, they’ve been one of the best ways to grow wealth.";
+      }
+    }
+
+    loadStockFact();
+    function goBackHome() {
+        window.location.href = "index.html";
+      }
+  </script>
+</body>
+</html>
