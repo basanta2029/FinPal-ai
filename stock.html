@@ -132,7 +132,7 @@ text-decoration: underline;
       const prompt = `Give me one surprising, beginner-friendly fact about the stock market in under 25 words. Make it punchy but educational.`;
 
       try {
-        const response = await fetch("http://localhost:5050/api/chat", {
+        const response = await fetch("https://finpal-proxy.onrender.com/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ prompt })
