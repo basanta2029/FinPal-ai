@@ -5,13 +5,14 @@ import cors from "cors";
 const app = express();
 const PORT = process.env.PORT || 5050;
 
+// ✅ Enable CORS for Netlify domain
 app.use(cors({
-    origin: "https://lovely-pika-0412b1.netlify.app"
-  }));
-  
-  app.options("/api/chat", cors({
-    origin: "https://lovely-pika-0412b1.netlify.app"
-  }));
+  origin: "https://lovely-pika-0412b1.netlify.app",
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
+// ✅ Parse incoming JSON
 app.use(express.json());
 
 app.post("/api/chat", async (req, res) => {
@@ -34,7 +35,7 @@ app.post("/api/chat", async (req, res) => {
     const data = await response.json();
     res.json(data);
   } catch (err) {
-    console.error("Proxy error:", err);
+    console.error("🔴 Proxy error:", err);
     res.status(500).json({ error: "Something went wrong in proxy." });
   }
 });
