@@ -121,26 +121,36 @@ document.addEventListener("DOMContentLoaded", () => {
   };
   function loadQuestion() {
     const scenario = allScenarios[userLevel][questionIndex];
-    if (!scenario) return showSection("summary");
+    if (!scenario) return goTo("summary");
   
-    // Randomize the option order
-    const options = [
+    const answers = [
       { label: "A", text: scenario.A },
       { label: "B", text: scenario.B },
       { label: "C", text: scenario.C }
-    ].sort(() => Math.random() - 0.5);
+    ];
   
-    // Set option text
+    const shuffled = answers.sort(() => 0.5 - Math.random());
+  
+    // Track correct answer after shuffle
+    let correctLabel = "";
+    for (const ans of shuffled) {
+      if (ans.text === scenario[scenario.correct]) {
+        correctLabel = ans.label;
+        break;
+      }
+    }
+  
     document.getElementById("scenario-title").innerText = scenario.title;
     document.getElementById("scenario-body").innerText = scenario.text;
   
-    // Render shuffled buttons
-    ["optA", "optB", "optC"].forEach((id, idx) => {
-      const opt = options[idx];
-      const btn = document.getElementById(id);
-      btn.innerText = opt.text;
-      btn.onclick = () => checkAnswer(opt.label);
-    });
+    // Attach text and handler
+    document.getElementById("optA").innerText = shuffled[0].text;
+    document.getElementById("optB").innerText = shuffled[1].text;
+    document.getElementById("optC").innerText = shuffled[2].text;
+  
+    document.getElementById("optA").onclick = () => checkAnswer(shuffled[0].label, scenario, correctLabel);
+    document.getElementById("optB").onclick = () => checkAnswer(shuffled[1].label, scenario, correctLabel);
+    document.getElementById("optC").onclick = () => checkAnswer(shuffled[2].label, scenario, correctLabel);
   
     document.getElementById("feedback").style.display = "none";
     document.getElementById("takeaway").style.display = "none";
