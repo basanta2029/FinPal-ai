@@ -1,6 +1,10 @@
 import express from "express";
 import fetch from "node-fetch";
 import cors from "cors";
+import dotenv from "dotenv";
+
+// ✅ Load the .env file
+dotenv.config();
 
 const app = express();
 app.use(cors());
@@ -13,12 +17,12 @@ app.post("/api/chat", async (req, res) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": "Bearer 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" // Your full key
+      "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
     },
     body: JSON.stringify({
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: prompt }],
-      max_tokens: 100
+      max_tokens: 100,
     }),
   });
 
