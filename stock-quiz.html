@@ -226,16 +226,24 @@
           tip.textContent = scenario.tip;
         } else {
           fb.textContent = "❌ Oops! Not quite.";
-          const prompt = `Question: ${scenario.text}\nUser chose: ${choice}\nCorrect answer: ${correctLabel}\nExplain why this answer is wrong in a short, encouraging tone.`;
+      
+          const prompt = `Question: ${scenario.text}
+      User chose: ${choice}
+      Correct answer: ${correctLabel}
+      Explain why this answer is wrong in a short, encouraging tone (1–2 lines).`;
+      
           try {
+            console.log("Sending prompt:", prompt);
             const response = await fetch("https://finpal-ai.onrender.com/api/chat", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ prompt })
             });
+      
             const data = await response.json();
-            tip.textContent = data.message?.trim() || scenario.tip;
-          } catch {
+            tip.textContent = data.choices?.[0]?.message?.content?.trim() || scenario.tip;
+          } catch (err) {
+            console.error("AI hint error:", err);
             tip.textContent = scenario.tip;
           }
         }
