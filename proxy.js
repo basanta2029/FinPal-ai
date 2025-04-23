@@ -5,7 +5,7 @@ import cors from "cors";
 const app = express();
 const PORT = process.env.PORT || 5050;
 
-app.use(cors({
+app.options("/api/chat", cors({
     origin: "https://lovely-pika-0412b1.netlify.app"
   }));
 app.use(express.json());
