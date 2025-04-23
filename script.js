@@ -147,34 +147,37 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("nextBtn").style.display = "none";
   }
 
-  async function checkAnswer(choice) {
-    const scenario = allScenarios[userLevel][questionIndex];
+  async function checkAnswer(choice, scenario, correctLabel) {
     const fb = document.getElementById("feedback");
     const tip = document.getElementById("takeaway");
   
-    if (choice === scenario.correct) {
-      // Friendly, positive reinforcement (no AI call)
-      const compliments = [
-        "🎯 Nailed it! You’re getting the hang of this!",
-        "✅ Boom! You’re thinking like an investor!",
-        "🔥 Love it. Keep that momentum going!",
-        "🌟 That’s what I’m talking about!",
-        "🚀 Right on! You’re leveling up!"
-      ];
-      const random = compliments[Math.floor(Math.random() * compliments.length)];
-      fb.textContent = random;
+    fb.style.display = "block";
+    tip.style.display = "block";
+    document.getElementById("nextBtn").style.display = "block";
+  
+    if (choice === correctLabel) {
+      fb.textContent = "✅ Nailed it!";
       tip.textContent = scenario.tip;
     } else {
-      // Soft and encouraging + AI hint
-      fb.textContent = "❌ Hmm, not quite...";
+      fb.textContent = "❌ Oops! Not quite.";
+  
+      const prompt = `Question: ${scenario.text}\nUser chose: ${choice}\nCorrect answer: ${correctLabel}\nExplain why this answer is wrong in a short, encouraging tone.`;
+  
       try {
-        const explanation = await getAIHint(scenario.text, choice, scenario.correct);
-        tip.textContent = "💡 Hint: " + explanation;
-      } catch (e) {
-        tip.textContent = "💡 Hint: " + scenario.tip;
+        const response = await fetch("https://finpal-ai.onrender.com/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt })
+        });
+  
+        const data = await response.json();
+        const hint = data.choices?.[0]?.message?.content?.trim();
+        tip.textContent = hint || scenario.tip;
+      } catch (error) {
+        console.error("AI fetch failed:", error);
+        tip.textContent = scenario.tip;
       }
     }
-  
     fb.style.display = "block";
     tip.style.display = "block";
     document.getElementById("nextBtn").style.display = "block";
