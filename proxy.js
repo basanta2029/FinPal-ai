@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 5050;
 
 // ✅ Enable CORS for Netlify domain
 app.use(cors({
-  origin: "https://lovely-pika-0412b1.netlify.app",
+  origin: "https://tangerine-otter-be47bd.netlify.app",
   methods: ["GET", "POST", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
