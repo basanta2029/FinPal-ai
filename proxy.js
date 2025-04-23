@@ -8,7 +8,7 @@ app.use(express.json()); // ✅ This is important!
 app.post("/api/chat", async (req, res) => {
     const { prompt } = req.body;
   
-    const response = await fetch("https://finpal-proxy.onrender.com/api/chat", {
+    const response = await fetch("https://finpal-ai.onrender.com/api/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -199,7 +199,7 @@ Now give a short, friendly response (2–3 lines max) that:
 - encourages the user without sounding robotic,
 - avoids emojis, hashtags, or motivational fluff,
 - sounds like a helpful peer, not an app.`;
-    const response = await fetch("https://finpal-proxy.onrender.com/api/chat", {
+    const response = await fetch("https://finpal-ai.onrender.com/api/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
