@@ -111,7 +111,7 @@ text-decoration: underline;
     <!-- AI-Powered Fact Section -->
     <div class="fact-section">
       <h3>Quick Stock Fact</h3>
-      <p id="fact" class="fact">Loading a cool stock fact for you...</p>
+      <p id="fact">Loading a cool fact for you...</p>
     </div>
 
     <!-- Experience buttons -->
@@ -132,7 +132,7 @@ text-decoration: underline;
       const prompt = `Give me one surprising, beginner-friendly fact about the stock market in under 25 words. Make it punchy but educational.`;
 
       try {
-        const response = await fetch("https://finpal-proxy.onrender.com/api/chat", {
+        const response = await fetch("https://finpal-ai.onrender.com/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ prompt })

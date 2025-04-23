@@ -234,7 +234,7 @@
               body: JSON.stringify({ prompt })
             });
             const data = await response.json();
-            tip.textContent = data.choices?.[0]?.message?.content.trim() || scenario.tip;
+            tip.textContent = data.message?.trim() || scenario.tip;
           } catch {
             tip.textContent = scenario.tip;
           }
